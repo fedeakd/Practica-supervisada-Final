@@ -1,0 +1,53 @@
+<ion-view title="Agregar desafio" id="page10">
+    <ion-content padding="true" class="has-header" padding="true" style="background: url(img/iSpzCsRgQsqhbgrRMIie_desafiar.jpg) no-repeat center;background-size:cover;"
+        class="has-header">
+
+
+
+
+
+        <form role="form" class="list" name="myForm">
+
+            <label class="item item-input">
+		<span class="input-label">Descripcion:</span>   
+		<input type="text"  id="descripcion" name="descripcion" ng-model="desafio.descripcion" placeholder="descripcion del desafio" required>
+	</label>
+            <label class="item item-select" id="generarDesafio-select1">
+		<span class="input-label">Categoria</span>
+		<select id="categoria" name="categoria" ng-init="desafio.categoria = options[0]" ng-model="desafio.categoria"   ng-options="option.name for option in options" name="Categoria" required></select>
+	</label>
+            <label class="item item-input" id="generarDesafio-input11">
+                <span class="input-label">Cantidad: {{desafio.cantidadPuesta}} </span>
+                <div class="item range ">
+                    <i>0</i>
+                    <input type="range" style="padding-right: 0px;"  min="0" max="{{usuario.puntos}}" step="0" value="0"  ng-model="desafio.cantidadPuesta">
+                    <i>{{usuario.puntos}}</i>
+                </div>
+            </label>
+
+            <label class="item item-input" id="generarDesafio-input14">
+		<span class="input-label">Fecha:</span>
+		<input type="date" placeholder="Indique cuando finaliza" name="fecha"  ng-model="desafio.fecha" required>
+	</label>
+            <label class="item item-input" id="generarDesafio-input11">
+                <span class="input-label">Jugadores:{{desafio.jugadoresLimite}}  </span>
+                <div class="item range ">
+                    <i>0</i>
+                    <input type="range" style="padding-right: 0px;"  min="0" max="10" step="0" value="0"  ng-model="desafio.jugadoresLimite">
+                    <i>10</i>
+                </div>
+            </label>
+
+
+            <div class="padding">
+                <p class="alerta" ng-show="myForm.descripcion.$invalid && (!show || !myForm.descripcion.$untouched )">* La descrpcion es necesario</p>
+                <p class="alerta" ng-show="myForm.fecha.$invalid && (!show || !myForm.fecha.$untouched )">* La fecha es requerida</p>
+                <p class="alerta" ng-show="myForm.jugadores.$invalid && !show ">* jugadores mayor 0 y menor 6</p>
+                <p class="alerta" ng-show="myForm.cantidad.$invalid &&(!show || !myForm.cantidad.$untouched )">* La cantidad es requerida</p>
+                <p class="alerta" ng-show="myForm.jugadores.$invalid && (!show || !myForm.jugadores.$untouched )">* La cantidad de jugadores es requerida</p>
+                <p class="alerta" ng-show="myForm.categoria.$invalid && (!show || !myForm.categoria.$untouched )">* La categoria es necesario </p>
+            </div>
+            <button ng-click="show= myForm.$valid ; show ? Aceptar():false" class="button button-balanced button-small button-block icon ion-checkmark-round">Aceptar</button>
+        </form>
+    </ion-content>
+</ion-view>

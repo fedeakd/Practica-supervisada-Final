@@ -1,0 +1,95 @@
+<ion-view title="Lista de desafio" id="page7">
+    <ion-content padding="true" style="background-color: #decc6a" class="has-header">
+
+
+
+
+
+        <label class="item item-input item-select item-calm">
+      <div class = "input-label">
+        <span class="input-label">Categoria</span>
+      </div>
+		
+        <select id="categoria" name="categoria" ng-init="desafio.categoria = options[1]" ng-model="desafio.categoria" ng-options="option.name for option in options"
+            name="Categoria"></select>
+        </label>
+
+        <div class="list card" ng-repeat="item in arrayDesafios | filtroReto:desafio.categoria.value">
+            <!--- Cabezera -->
+            <div class="bar bar-header bar-positive" ng-click="MostrarContenedor({{item.num}})">
+
+                <div class="row">
+                    <div class="col">
+                        <div>{{item.categoria}}</div>
+                    </div>
+                    <div class="col">
+                        <div>{{item.finaliza}}</div>
+                    </div>
+                    <div class="col">
+                        <div> {{item.estado}}</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--- Cuerpo -->
+            <div class="card " style="background:#00c2ff">
+
+                <div ng-if="item.mostrar">
+                    <div class="row">
+
+                    </div>
+
+                    <div style="background-color: white;" class="item item-divider">
+
+                        <div class="row">
+                            <div>
+                                Mail: {{item.desafiante.mail}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                Apuesta: {{item.cantidadPuesta}}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="background-color: #387ef5;" class="item item-text-wrap">
+                        <p ng-class="text-descripcion" style="white-space: initial;color:white"> Descripcion:{{item.descripcion}} </p>
+                    </div>
+
+                    <div style="background-color: white;" class="item item-divider">
+                        <div class="row">
+                            <div class="col">
+                                <div ng-if="usuario.estado== 'normal' && item.estado=='activo' ">
+                                    <button ng-click="Aceptar(item)" class="button button-small button-balanced button-outline round">
+                                      Aceptar reto
+                                        </button>
+                                </div>
+                                <div ng-if="usuario.estado== 'administrador' && item.estado=='espera'">
+                                    <button ng-click="ValidarDesafio(item)" class="button button-small button-balanced button-outline round">
+                                     Validar Reto
+                                        </button>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div>
+                                    <button class="button button-small button-positive button-outline round" ng-click="MostrarJugadores(item)">
+                                      Ver jugadores
+                                        </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+    </ion-content>
+</ion-view>

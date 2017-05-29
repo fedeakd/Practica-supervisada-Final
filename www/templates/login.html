@@ -1,0 +1,23 @@
+<ion-view title="Login" id="page9">
+<ion-content padding="true" style="background: url(img/zL9qzOIBTMKlpiDDRFnQ_login2.jpg) no-repeat center;background-size:cover;" class="has-header">
+<h2 id="login-heading1" style="color:#BCCCD3;font-weight:600;font-style:italic;text-align:center;">Logeate!!</h2>
+<span  class="alerta" ng-show="persona.clave.$invalid && show">La clave es requerido <br></span>
+<span class="alerta" ng-show="persona.mail.$error.email">No es un mail valido</span> 
+<span class="alerta" ng-show="persona.mail.$invalid && show && !persona.mail.$error.email">El mail es requerido</span> 
+<form name="persona" id="login-form2" class="list" >
+    <label class="item item-input" id="login-input4"  style="background-color: #e08027;">
+        <span class="input-label">Mail:</span>
+        <input type="email" name="mail" ng-model="user.mail"  required placeholder="">
+    </label>
+    <label class="item item-input" id="login-input3" style="background-color: #e08027;">
+        <span class="input-label">Clave:</span>
+        <input type="password" name="clave" ng-model="user.clave"  required placeholder="">
+    </label>
+    <button id="login-button2" class="button button-energized  button-block button-outline"  ng-click="show= persona.$invalid ? true : false ; show ? true: IrAlDesafio() " >Aceptar</button>
+
+</form>
+
+<button id="login-button3" class="button button-calm  button-block button-outline" ng-click="IrARegistrar()">Registrarme</button>
+<button id="login-button6" style="color:#30E061;" ng-click="RecuperarClave(persona.mail.$valid)" class="button button-positive  button-block button-clear">Olvide la contraseña</button>
+</ion-content>
+</ion-view>
