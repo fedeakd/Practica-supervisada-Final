@@ -45,6 +45,7 @@ angular.module('app.DesafiosControllers', ['firebase'])
         $scope.Aceptar = function () {
             if ($scope.desafio.cantidadPuesta < 5) {
                 Informacion.AlertaMensaje("Algo salio mal", "La apuesta minimo es 5 ");
+                return;
             }
 
             if (!Informacion.ComprobarFechaEsMayorQueLaDeHoy($scope.desafio.fecha)) {
@@ -61,7 +62,6 @@ angular.module('app.DesafiosControllers', ['firebase'])
             desafio.categoria = $scope.desafio.categoria.name;
             desafio.desafiante = Informacion.usuario;
             desafio.finaliza = Informacion.DameFecha($scope.desafio.fecha);
-            console.log(desafio);
 
             firebaseDesafios.push(desafio);
 
@@ -121,7 +121,6 @@ angular.module('app.DesafiosControllers', ['firebase'])
                 template: "<div ng-repeat='jugador in desafioAdministrador.jugadores'> <button ng-click='SeleccinarJugador(jugador)' class='button button-dark button-clear'>"
                 + " {{jugador.mail}}  </button> </div>"
             })
-            console.log(item);
         }
         $scope.SeleccinarJugador = function (jugador) {
             var datos = $scope.desafioAdministrador;

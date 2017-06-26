@@ -1,0 +1,49 @@
+<style>
+  .popup {
+    width: 1000px !important;
+    height: 900px;
+  }
+</style>
+<h3 style="text-align: center; color:{{tituloColor}}">{{titulo}}</h3>
+<div>
+  <div ng-if="batallaNaval.estado=='inicio'" class="row" ng-repeat="fila in matrizInicio  track by $index">
+    <div class="col" ng-repeat="celda in fila  track by $index">
+      <flippy ng-click="CambiarCarta(celda)" class="fancy" flip="['click','custom:'+celda.evento+'In'] " flip-back="['click','custom:'+celda.evento+'Out']"
+        duration="800" timing-function="ease-in-out">
+
+        <flippy-front>
+          <img src="img/atrasPirata.jpg" alt="the front" />
+        </flippy-front>
+
+        <flippy-back>
+          <img src="img/ImagenBarco.jpg" alt="the back" />
+        </flippy-back>
+
+      </flippy>
+    </div>
+  
+  </div>
+
+
+<div ng-if="batallaNaval.estado=='activo'" class="row" ng-repeat="fila in matrizActivo  track by $index">
+  <div class="col" ng-repeat="celda in fila  track by $index">
+    <flippy style=" height: 120px;" ng-click="ComprobarCarta(celda)" class="fancy" flip="['custom:'+celda.evento+'In'] " flip-back="['custom:'+celda.evento+'Out']"
+      duration="800" timing-function="ease-in-out">
+
+      <flippy-front>
+        <img ng-show="!celda.descubierto" src="img/atrasPirata.jpg" alt="the front" />
+        <img ng-show="celda.descubierto" src="img/cardWater2.jpg" alt="the front" />
+      </flippy-front>
+
+      <flippy-back>
+
+        <img src="img/{{celda.barco ?'ImagenBarco':'cardWater2'}}.jpg" alt="the back" />
+      </flippy-back>
+
+    </flippy>
+
+
+  </div>
+</div>
+
+  <button class="button button-full button-positive" ng-click="AceptarBN()">Finished</button>

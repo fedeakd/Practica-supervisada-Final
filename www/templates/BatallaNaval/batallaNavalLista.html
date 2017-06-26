@@ -1,0 +1,23 @@
+<ion-view title="Lista de desafio" id="page7" cache-view="false">
+    <ion-content padding="true" style="background-color: #00c2ff" class="has-header">
+
+        <div ng-show="((item.estado=='inicio'|| item.estado=='activo')&& item.habilitado )" class="list card" ng-repeat="item in arrayBN ">
+                <div class="bar bar-header bar-dark" ng-click="MostrarBatallaN(item)">
+
+                <div class="row">
+                    <div class="col">
+                        <div>{{item.usuario}}</div>
+                    </div>
+                    <div class="col">
+                        <div>{{item.apuesta}} puntos</div>
+                    </div>
+                </div>
+
+            </div>
+      
+        <div class="card " style="background:#00c2ff">
+        </div>
+        </div>
+
+    </ion-content>
+</ion-view>

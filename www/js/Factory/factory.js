@@ -6,11 +6,13 @@ angular.module('app.factory', ['firebase']).
     Informacion.usuario.nombre = "joselito";
     Informacion.TraerUsuarioActual = TraerUsuarioActual;
     Informacion.TraerDesafios = TraerDesafios;
+    Informacion.TraerBatallaNaval = TraerBatallaNaval;
     Informacion.DameFecha = DameFecha;
     Informacion.AlertaMensaje = AlertaMensaje;
     Informacion.ValidarReto = ValidarReto;
     Informacion.ComprobarFechaEsMayorQueLaDeHoy = ComprobarFechaEsMayorQueLaDeHoy;
-
+    Informacion.GenerarTablero = GenerarTablero;
+    Informacion.EventoCambioBatallaNaval = EventoCambioBatallaNaval;
     return Informacion;
 
     function TraerDesafios(darDesafios) {
@@ -38,8 +40,39 @@ angular.module('app.factory', ['firebase']).
         })
       })
     }
+    //Batalla Naval
+    function TraerBatallaNaval(darBatallaNaval) {
+      var firebaseBN = Servicio.RefBatallaNaval();
+      var fechaActual = new Date();
+      firebaseBN.on('child_added', function (snapshot) {
+        $timeout(function () {
+          var bn = snapshot.val();
+          bn.key = snapshot.key;
+          if (bn.estado == "activo") {
+            bn.habilitado = bn.tablero[(bn.turno % 2 == 0 ? 1 : 0)].usuario.mail == Informacion.usuario.mail ? true : false;
+          }
+          if (bn.estado == "inicio") {
+            bn.habilitado = (Informacion.usuario.mail != bn.tablero[0].usuario.mail);
+          }
 
+          darBatallaNaval(bn);
+        })
+      })
+    }
 
+    function EventoCambioBatallaNaval(DetectarCambio) {
+      var firebaseBN = Servicio.RefBatallaNaval();
+      firebaseBN.on("child_changed", function (snapshot) {
+        var bn = snapshot.val();
+         bn.key = snapshot.key;
+        if (bn.estado == "activo") {
+          bn.habilitado = bn.tablero[(bn.turno % 2 == 0 ? 1 : 0)].usuario.mail == Informacion.usuario.mail ? true : false;
+        }
+        DetectarCambio(bn);
+      });
+
+    }
+    //Fin Batalla Naval
     function TraerUsuarioActual(darUsuario) {
       var firabaseJugadores = Servicio.RefJugadores();
       firebase.auth().onAuthStateChanged(function (user) {//si esta logeado
@@ -118,5 +151,18 @@ angular.module('app.factory', ['firebase']).
       return true;
 
     }
-
+    //BatallaNaval
+    function GenerarTablero() {
+      matriz = [[0, 0], [0, 0]];
+      for (var i = 0; i < matriz.length; i++) {
+        for (var q = 0; q < matriz[i].length; q++) {
+          matriz[i][q] = {};
+          matriz[i][q].evento = "miEvento" + ((i * 2) + q);
+          matriz[i][q].barco = false;
+          matriz[i][q].rival = false;
+          matriz[i][q].descubierto = false;
+        }
+      }
+      return matriz;
+    }
   });

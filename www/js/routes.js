@@ -47,6 +47,7 @@ angular.module('app.routes', [])
       })
       .state('desafio.lista', {
         url: '/lista',
+        cache: false,
         views: {
           'lista': {
             templateUrl: 'templates/Desafio/desafioLista.html',
@@ -69,6 +70,16 @@ angular.module('app.routes', [])
           'alta': {
             templateUrl: 'templates/BatallaNaval/batallaNavalAlta.html',
             controller: 'batallaNavalAltaController'
+          }
+        }
+      })
+      .state('batallaNaval.lista', {
+        url: '/lista',
+        cache: false,
+        views: {
+          'lista': {
+            templateUrl: 'templates/BatallaNaval/batallaNavalLista.html',
+            controller: 'batallaNavalListaController'
           }
         }
       })

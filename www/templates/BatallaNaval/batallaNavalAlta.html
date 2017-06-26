@@ -1,44 +1,49 @@
 <ion-view title="Agregar Batalla" id="page10">
-    <ion-content padding="true" class="has-header" padding="true" style="background: url(img/FondoBatallaNavalAlta.jpg) no-repeat center;background-size:cover;"
-        class="has-header">
-        <div id="gridWrapper">
+  <ion-content padding="true" class="has-header" padding="true" style="background: url(img/FondoBatallaNavalAlta.jpg) no-repeat center;background-size:cover;"
+    class="has-header">
+    <!-- Parte formulario -->
+    <form role="form" class="list" name="myForm">
 
-            <div class="flipBtnWrapper">
-                <input class="flipBtn_checkbox" type="checkbox" />
-                <div class="flipBtn demo1">
-                    <div class="flipBtn_face flipBtn_back demo1"></div>
-                    <div class="flipBtn_face flipBtn_mid demo1"></div>
-                    <div class="flipBtn_face flipBtn_front demo1"></div>
+      <label class="item item-input" id="generarDesafio-input11">
+                <span class="input-label">Cantidad: {{bn.cantidadPuesta}} </span>
+                <div class="item range ">
+                    <i>0</i>
+                    <input type="range" style="padding-right: 0px;"  min="0" max="{{usuario.puntos}}" step="0" value="0"  ng-model="bn.cantidadPuesta">
+                    <i>{{usuario.puntos}}</i>
                 </div>
-            </div>
+      </label>
 
-            <div class="flipBtnWrapper">
-                <input class="flipBtn_checkbox" type="checkbox" />
-                <div class="flipBtn demo2">
-                    <div class="flipBtn_face flipBtn_back demo2"></div>
-                    <div class="flipBtn_face flipBtn_mid demo2"></div>
-                    <div class="flipBtn_face flipBtn_front demo2"></div>
-                </div>
-            </div>
+      <label class="item item-input" id="generarDesafio-input14">
+		<span class="input-label">Fecha:</span>
+		<input type="date" placeholder="Indique cuando finaliza" name="fecha"  ng-model="bn.fecha" required>
+	</label>
+    </form>
 
-            <div class="flipBtnWrapper">
-                <input class="flipBtn_checkbox" type="checkbox" />
-                <div class="flipBtn demo3">
-                    <div class="flipBtn_face flipBtn_back demo3"></div>
-                    <div class="flipBtn_face flipBtn_mid demo3"></div>
-                    <div class="flipBtn_face flipBtn_front demo3"></div>
-                </div>
-            </div>
 
-            <div class="flipBtnWrapper">
-                <input class="flipBtn_checkbox" type="checkbox" />
-                <div class="flipBtn demo4">
-                    <div class="flipBtn_face flipBtn_back demo4"></div>
-                    <div class="flipBtn_face flipBtn_mid demo4"></div>
-                    <div class="flipBtn_face flipBtn_front demo4"></div>
-                </div>
-            </div>
+    <!-- Parte Carta -->
+      <h1 style= "text-align: center; color:white" >Seleccione una carta</h1>
+      <div class="row"  ng-repeat="fila in matriz  track by $index">
+        <div class="col"  ng-repeat="celda in fila  track by $index">
+          <flippy ng-click="CambiarCarta(celda)" class="fancy" flip="['click','custom:'+celda.evento+'In'] " flip-back="['click','custom:'+celda.evento+'Out']"
+            duration="800" timing-function="ease-in-out">
 
-        </div>
-    </ion-content>
+            <flippy-front>
+              <img src="img/atrasPirata.jpg" alt="the front" />
+            </flippy-front>
+
+            <flippy-back>
+              <img src="img/ImagenBarco.jpg" alt="the back" />
+            </flippy-back>
+
+          </flippy>
+       
+
+      </div>
+    </div>
+    <div class="padding">
+      <p class="alerta" ng-show="myForm.fecha.$invalid && (!show || !myForm.fecha.$untouched )">* La fecha es requerida</p>
+      <p class="alerta" ng-show="myForm.cantidad.$invalid &&(!show || !myForm.cantidad.$untouched )">* La cantidad es requerida</p>
+    </div>
+    <button ng-click="show= myForm.$valid ; show ? Aceptar():false" class="button button-balanced button-small button-block icon ion-checkmark-round">Aceptar</button>
+  </ion-content>
 </ion-view>
