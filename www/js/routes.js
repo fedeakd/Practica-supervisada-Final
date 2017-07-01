@@ -91,6 +91,11 @@ angular.module('app.routes', [])
         templateUrl: 'templates/login.html',
         controller: 'loginController'
       })
+      .state('logout', {
+        url: '/Login',
+        templateUrl: 'templates/login.html',
+        controller: 'logoutController'
+      })
       .state('registrar', {
         url: '/registrar',
         templateUrl: 'templates/registrar.html',

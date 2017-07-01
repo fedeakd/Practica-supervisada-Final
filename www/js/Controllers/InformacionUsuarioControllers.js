@@ -1,7 +1,9 @@
 angular.module('app.InformacionUsuarioControllers', ['firebase'])
 	.controller('infoDelUsuarioController',
-	function ($scope, $stateParams, $state, Informacion, $ionicPopup, $timeout) {
+	function ($scope, $stateParams, $state, Informacion, $ionicPopup, $timeout,$ionicSideMenuDelegate) {
 		$scope.usuario={};
+		$ionicSideMenuDelegate.canDragContent(true);
+		console.log("entro");
 		if (Informacion.usuario.mail == null) {
 			Informacion.TraerUsuarioActual(function(usuario){
 				$scope.usuario=usuario;

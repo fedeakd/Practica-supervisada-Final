@@ -2,12 +2,14 @@
 angular.module('app.UsuarioYRegistrarControllers', ['firebase'])
 
 	.controller('loginController',
-	function ($scope, $stateParams, $ionicPopup, Informacion, $state, $timeout, Servicio) {
+	function ($scope, $stateParams, $ionicPopup, Informacion, $state, $timeout, Servicio, $ionicSideMenuDelegate) {
+		$ionicSideMenuDelegate.canDragContent(false);
 		$scope.user = {};
 		$scope.user.mail = "soii_fede@hotmail.com";
 		$scope.user.clave = "federico18";
 		$scope.$root.showMenuIcon = true;
 		var firabaseJugadores = Servicio.RefJugadores();
+
 		firebase.auth().onAuthStateChanged(function (user) {//si esta logeado
 			if (user) {
 				firabaseJugadores.on('child_added', function (snapshot) {//Compruebo el usuario  que se logeo y traigo el dato
@@ -18,7 +20,7 @@ angular.module('app.UsuarioYRegistrarControllers', ['firebase'])
 						//Usuario=message;
 						Informacion.usuario = message;
 						$scope.$root.showMenuIcon = false;
-						$state.go("usuario.informacionDelUsuario", {}, { reload: true });
+						$state.go("usuario.informacionDelUsuario");
 
 						return;
 					}
@@ -29,8 +31,10 @@ angular.module('app.UsuarioYRegistrarControllers', ['firebase'])
 		});
 
 
-		$scope.IrARegistrar = function () {
 
+
+		$scope.IrARegistrar = function () {
+			console.log("registrar");
 			$state.go("registrar");
 		}
 
@@ -108,10 +112,9 @@ angular.module('app.UsuarioYRegistrarControllers', ['firebase'])
 		}
 
 	})
-
 	.controller('RegistrarController',
 	function ($scope, $stateParams, $state, $ionicPopup, Servicio) {
-		var firabaseJugadores = Servicio.RefJugadores();
+		console.log("atr");
 		$scope.persona = {};
 		$scope.persona.mail = "soii_fede123@hotmail.com";
 		$scope.persona.clave = "federico18";
@@ -149,13 +152,19 @@ angular.module('app.UsuarioYRegistrarControllers', ['firebase'])
 						'clave': $scope.persona.clave,
 						'estado': 'normal',
 						'proveedor': 'ordinario',
-						'puntos': 100,
+						'puntos': 50,
 						'tickets': [],
 						'partidas': {
-							'ganada': [],
-							'empatada': [],
-							'perdida': [],
-							'cantidad': 0
+							'BatallaNaval': {
+								'empatada': 0,
+								'perdida': 0,
+								'ganada': 0
+							},
+							'Desafio': {
+								'empatada': 0,
+								'perdida': 0,
+								'ganada': 0
+							}
 						},
 						'fechaIncripcion': $scope.fechaActual()
 
@@ -203,6 +212,15 @@ angular.module('app.UsuarioYRegistrarControllers', ['firebase'])
 			$state.go("login");
 		}
 
+
+	})
+	.controller('logoutController',
+	function ($scope, $stateParams, $state, $ionicPopup, Servicio, $ionicSideMenuDelegate) {
+		firebase.auth().signOut().then(function () {//Si me queiro desloguear
+			$state.go("login");
+		}, function (error) {
+			// An error happened.
+		});
 
 	})
 

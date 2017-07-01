@@ -77,12 +77,15 @@ angular.module('app.DesafiosControllers', ['firebase'])
     .controller('desafioListaController',
     function ($scope, $stateParams, $state, $ionicPopup, Servicio, Informacion) {
         //borrable
-        $scope.usuario = {};
         if (Informacion.usuario.mail == null) {
             Informacion.TraerUsuarioActual(function (usuario) {
 
                 $scope.usuario = usuario;
+                console.log($scope.usuario.estado);
             });
+        }
+        else{
+            $scope.usuario = Informacion.usuario;
         }
         //fin
 
@@ -94,9 +97,7 @@ angular.module('app.DesafiosControllers', ['firebase'])
             { name: "Espera", value: 'espera' },
             { name: "Mis partidas", value: 'Mis partidas' },
             { name: "Terminada", value: 'terminada' },
-            { name: "Inteligencia", value: 'Inteligencia' },
-            { name: "Riesgo", value: 'Riesgo' },
-            { name: "Otros", value: 'Otros' }
+
         ];
 
 
