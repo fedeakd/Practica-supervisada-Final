@@ -12,7 +12,7 @@ Juego online: Generador de desafíos / Batalla naval
 <p style="font-size: 14px;"><strong>Curso:</strong> 4&ordm; A</p>
 <p>&nbsp;</p>
 <h2 style="color: #2e6c80;">Acceso:</h2>
-<p style="font-size: 14px;"><strong>WEB: <a href="https://tpfinalionic2016.firebaseapp.com">https://proyectofinal-8219d.firebaseapp.com/</a></strong></p>
+<p style="font-size: 14px;"><strong>WEB: <a href="https://proyectofinal-8219d.firebaseapp.com/">https://proyectofinal-8219d.firebaseapp.com/</a></strong></p>
 <p>&nbsp;</p>
 <h2 style="color: #2e6c80;">Créditos QR:</h2>
 <table style="width: 100%;">
