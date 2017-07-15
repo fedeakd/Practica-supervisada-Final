@@ -21,7 +21,7 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
         tablero.usuario = Informacion.usuario;
 
         $scope.bn.fecha = new Date("2017-08-10");
-        $scope.bn.cantidadPuesta = 5;
+        $scope.bn.cantidadPuesta = 0;
         var firebaseBN = Servicio.RefBatallaNaval();
         var firebaseUsuarios = Servicio.RefJugadores();
 
@@ -55,6 +55,7 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
             firebaseUsuarios.child($scope.usuario.key).update({ "puntos": $scope.usuario.puntos });
             firebaseBN.push(bn);
 
+            $state.go("batallaNaval.lista");
 
 
         }
@@ -68,29 +69,58 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
         }
 
     }).controller('batallaNavalListaController',
-    function ($scope, $stateParams, $state, $ionicPopup, Servicio, Informacion, $rootScope, $timeout) {
+    function ($scope, $stateParams, $state, $ionicPopup, Servicio, Informacion, $rootScope, $timeout, $cordovaVibration) {
+
+        Informacion.TraerUsuarioActual(function (usuario) {
+
+            $scope.usuario = usuario;
+            Informacion.usuario = usuario;
+        });
+
         var firebaseBN = Servicio.RefBatallaNaval();
         var firebaseUsuarios = Servicio.RefJugadores();
         $scope.arrayBN = [];
         Informacion.TraerBatallaNaval(function (bn) {
             bn.usuario = bn.tablero[0].usuario.mail;
             $scope.arrayBN.push(bn);
+
+            // console.log(bn);
+
         })
         Informacion.EventoCambioBatallaNaval(function (bn) {
             bn.usuario = bn.tablero[0].usuario.mail;
             for (var i = 0; i < $scope.arrayBN.length; i++) {
                 if ($scope.arrayBN[i].key == bn.key) {
-                    console.log($scope.arrayBN[i]);
                     $scope.arrayBN[i] = bn;
                     break;
                 }
             }
         });
 
+
+        $scope.Informacion= function(item){
+            var formato = "Estado: "+ item.estado +"\n" +
+            "Creador: "+ item.usuario + "\n" ;
+            if(item.estado== "activo"){
+                formato+="Desafiante: "+ item.tablero[1].usuario.mail+"\n" ;
+            }
+            else{
+                formato+="Desafiante: "+ "esperando..."+"\n" ;
+            }
+            formato += "Turno: " + (item.turno==-1 ? "-" : item.turno)+"\n";
+            formato += "Apuesta: "+ item.apuesta;
+            alert(formato);
+           //Informacion.AlertaMensaje("Informacion de la partida", "hola \n chau ");
+        }
         $scope.MostrarBatallaN = function (item) {
             $scope.mostrarCarta = true;
 
             $scope.batallaNaval = item;
+            console.log(Informacion.usuario.puntos + "-" + item.apuesta);
+            if ((item.estado == "inicio") && (Informacion.usuario.puntos < item.apuesta)) {
+                Informacion.AlertaMensaje("Algo salio mal", "No tienes fichas suficientes ");
+                return;
+            }
 
             if (item.estado == "inicio" && (item.usuario != Informacion.usuario.maill)) {
                 $scope.titulo = "Seleccione donde quiere que este tu barco";
@@ -139,6 +169,10 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
                         firebaseBN.child($scope.batallaNaval.key).update({ "turno": 0 });
                         firebaseBN.child($scope.batallaNaval.key).update({ "estado": "activo" });
                         $scope.matrizActivo = $scope.batallaNaval.tablero[0].cartas;
+
+                        Informacion.usuario.puntos -= $scope.batallaNaval.apuesta;
+                        firebaseUsuarios.child(Informacion.usuario.key).update({ "puntos": Informacion.usuario.puntos });
+
                     }
                     else {
                         $scope.titulo = "Debes seleccionar una carta";
@@ -147,7 +181,6 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
                     break;
                 case "activo":
                     $scope.miPoppup.close();
-                    console.log("no cierra");
                     $scope.arrayBN = [];
                     Informacion.TraerBatallaNaval(function (bn) {
                         bn.usuario = bn.tablero[0].usuario.mail;
@@ -161,6 +194,7 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
         $scope.ComprobarCarta = function (celda) {
             var turno = $scope.batallaNaval.turno;
             if ($scope.mostrarCarta) {
+
                 $rootScope.$broadcast(celda.evento + 'In');
                 if (celda.barco) {
                     $scope.tituloColor = "green";
@@ -171,12 +205,30 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
                             $scope.titulo = "HAS GANADO  LA PARTIDA";
                             firebaseBN.child($scope.batallaNaval.key).update({ "ganador": $scope.batallaNaval.tablero[0].usuario });
                             firebaseBN.child($scope.batallaNaval.key).update({ "estado": "finalizo" });
+                            AsignarPartida($scope.batallaNaval.tablero[0].usuario.key, "ganada", $scope.batallaNaval.apuesta);
+                            AsignarPartida($scope.batallaNaval.tablero[1].usuario.key, "perdida", -1);
+                            try {
+                                navigator.vibrate([1000, 500, 1000, 500, 1000]);
+                            }
+                            catch (error) {
+
+                            }
                         }
                         else {
                             $scope.tituloColor = "ORANGE";
                             $scope.titulo = "HAS EMPATADO  LA PARTIDA";
                             firebaseBN.child($scope.batallaNaval.key).update({ "ganador": "empatada" });
                             firebaseBN.child($scope.batallaNaval.key).update({ "estado": "finalizo" });
+                            console.log("entro");
+                            AsignarPartida($scope.batallaNaval.tablero[0].usuario.key, "empatada", -1);
+                            AsignarPartida($scope.batallaNaval.tablero[1].usuario.key, "empatada", -1);
+
+                            try {
+                                navigator.vibrate([2000]);
+                            }
+                            catch (error) {
+
+                            }
                         }
                     }
                 }
@@ -188,6 +240,14 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
                             $scope.titulo = "HAS PERDIDOS  LA PARTIDA";
                             firebaseBN.child($scope.batallaNaval.key).update({ "ganador": $scope.batallaNaval.tablero[1].usuario });
                             firebaseBN.child($scope.batallaNaval.key).update({ "estado": "finalizo" });
+                            AsignarPartida($scope.batallaNaval.tablero[1].usuario.key, "ganada", $scope.batallaNaval.apuesta);
+                            AsignarPartida($scope.batallaNaval.tablero[0].usuario.key, "perdida", -1);
+                            try {
+                                navigator.vibrate([1000, 500]);
+                            }
+                            catch (error) {
+
+                            }
                         }
                     }
                 }
@@ -201,4 +261,37 @@ angular.module('app.BatallaNavalControllers', ['firebase'])
                 $scope.mostrarCarta = false;
             }
         }
+
+        function AsignarPartida(key, opc, apuesta) {
+            firebaseUsuarios.child(key).once('value').then(function (snapshot) {
+                var p = snapshot.val();
+                var resultado = -1;
+                switch (opc) {
+                    case "ganada":
+                        p.partidas.BatallaNaval.ganada++;
+                        resultado = (2 * apuesta) + p.puntos;
+                        break;
+                    case "empatada":
+                        p.partidas.BatallaNaval.empatada++;
+                        break;
+                    case "perdida":
+                        p.partidas.BatallaNaval.perdida++;
+                        break;
+                }
+                if (resultado != -1) {
+                    firebaseUsuarios.child(key).update({
+                        "partidas": p.partidas,
+                        "puntos": resultado
+                    });
+                }
+                else {
+                    firebaseUsuarios.child(key).update({
+                        "partidas": p.partidas
+                    });
+                }
+
+            });
+        }
+
+
     })

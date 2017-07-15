@@ -1,22 +1,26 @@
 <ion-view title="Lista de desafio" id="page7" cache-view="false">
-    <ion-content padding="true" style="background-color: #00c2ff" class="has-header">
+    <ion-content padding="true" class="has-header" style="background: url(img/8Arxz27EQ9WjjHFmNAyO_desafios.jpg) no-repeat center;background-size:cover;">
 
         <div ng-show="((item.estado=='inicio'|| item.estado=='activo')&& item.habilitado )" class="list card" ng-repeat="item in arrayBN ">
-                <div class="bar bar-header bar-dark" ng-click="MostrarBatallaN(item)">
+            <div class="bar bar-header bar-dark">
 
-                <div class="row">
+                <div class="row" ng-click="MostrarBatallaN(item)">
                     <div class="col">
-                        <div>{{item.usuario}}</div>
+                        <div>{{item.estado == "activo"? item.tablero[(bn.turno % 2 == 0 ? 0 : 1)].usuario.mail: item.usuario;}}</div>
                     </div>
                     <div class="col">
                         <div>{{item.apuesta}} puntos</div>
                     </div>
                 </div>
 
+                <button class="button button-balanced icon ion-information" ng-click="Informacion(item)">
+                     </button>
+
+
             </div>
-      
-        <div class="card " style="background:#00c2ff">
-        </div>
+
+            <div class="card " style="background:#00c2ff">
+            </div>
         </div>
 
     </ion-content>

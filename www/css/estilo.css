@@ -141,9 +141,62 @@ body {
 .dark h3,
 .dark p,
 .dark a {
-  color: #F0F1F1;
+  color: #25a6a6;
 }
 
 .dark-head {
   text-decoration: none;
+}
+.switch-button {
+  width: 400px;
+  height: 40px;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate3D(-50%, -50%, 0);
+  transform: translate3D(-50%, -50%, 0);
+  will-change: transform;
+  z-index: 197 !important;
+  cursor: pointer;
+  -webkit-transition: .3s ease all;
+  transition: .3s ease all;
+  border: 1px solid #01f4fb;
+  background-color:rgba(57, 130, 137, 0.09);
+}
+.switch-button-case {
+  display: inline-block;
+  background: none;
+  width: 49%;
+  height: 60%;
+  color: #03b7ef;
+  position: relative;
+  border: none;
+  -webkit-transition: .3s ease all;
+  transition: .3s ease all;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  padding-bottom: 1px;
+}
+.switch-button-case:hover {
+  color: #01f4fb;
+  cursor: pointer;
+}
+.switch-button-case:focus {
+  outline: none;
+}
+.switch-button .active {
+  color: #f7b813;
+  background-color: rgb(169, 146, 43);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  z-index: -1;
+  -webkit-transition: .3s ease-out all;
+  transition: .3s ease-out all;
+}
+.switch-button .active-case {
+  color: #01f4fb;
 }

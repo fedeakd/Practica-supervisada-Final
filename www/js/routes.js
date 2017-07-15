@@ -1,9 +1,17 @@
 angular.module('app.routes', [])
-
+  /* 
+  *Tarea 
+  *Crear la paginada del creador
+  *Fijarse lo de validar desafio
+  *Icono de la aplicacion
+  
+  
+  */
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state('usuario', {
         url: '/usuario',
+        cache: false,
         templateUrl: 'templates/Usuario/usuarioTabs.html',
         abstract: true
       })
@@ -19,16 +27,22 @@ angular.module('app.routes', [])
       })
       .state('usuario.misPartidas', {
         url: '/misPartidas',
+        cache: false,
         views: {
           'misPartidas': {
-            cache: false,
             templateUrl: 'templates/Usuario/misPartidas.html',
             controller: 'misPartidasController'
           }
         }
       })
+      .state('presentacion', {
+        url: '/presentacion',
+
+        templateUrl: 'templates/Usuario/presentacion.html',
+        controller: 'presentacionController'
 
 
+      })
       .state('desafio', {
         url: '/desafio',
         cache: false,

@@ -5,8 +5,8 @@ angular.module('app.UsuarioYRegistrarControllers', ['firebase'])
 	function ($scope, $stateParams, $ionicPopup, Informacion, $state, $timeout, Servicio, $ionicSideMenuDelegate) {
 		$ionicSideMenuDelegate.canDragContent(false);
 		$scope.user = {};
-		$scope.user.mail = "soii_fede@hotmail.com";
-		$scope.user.clave = "federico18";
+		$scope.user.mail = "";
+		$scope.user.clave = "";
 		$scope.$root.showMenuIcon = true;
 		var firabaseJugadores = Servicio.RefJugadores();
 
@@ -111,15 +111,96 @@ angular.module('app.UsuarioYRegistrarControllers', ['firebase'])
 
 		}
 
+		$scope.AutoLogin = function (tipo) {
+			var usuario = "";
+			var clave = "123456";
+
+			switch (tipo) {
+				case "player1":
+					usuario = "jugador@matrix.com";
+					break;
+				case "player2":
+					usuario = "jugador2@matrix.com";
+					break;
+				case "administrador":
+					usuario = "administrador@matrix.com";
+					break;
+			}
+
+			firebase.auth().signInWithEmailAndPassword(usuario, clave).then(function (user) {
+				$timeout(function () {
+					$scope.datoUsuario = JSON.stringify(user, "sin registrar", "");
+
+					if (user) {
+						firabaseJugadores.on('child_added', function (snapshot) {//Compruebo el usuario  que se logeo y traigo el dato
+
+							var message = snapshot.val();
+							if (message.id === user.uid) {
+								$scope.$root.showMenuIcon = false;
+								$state.go("usuario.informacionDelUsuario", {}, { reload: true });
+
+								return;
+							}
+						});
+
+						$scope.estalogeado = "si";
+					}
+					else {
+
+						$scope.estalogeado = "no";
+
+					}
+
+					$scope.habilitarfORM = true;
+				})
+
+			}).catch(function (error) {
+				var errorCode = error.code;
+				var erroMessage = error.menssage;
+				var mensaje = "";
+
+				if (errorCode === "auth/wrong-password") {
+					mensaje = "Error, contraseña no valida";
+					console.log("Wrong password");
+
+				}
+				else if (errorCode === "auth/invalid-email") {
+					mensaje = "Error, MAIL no valido";
+				}
+				else if (errorCode === "auth/user-disabled") {
+					mensaje = "Error, El usuario se ah dado de baja";
+					//Usuario  desactivado
+				}
+				else if (errorCode === "auth/user-not-found") {
+					mensaje = "Error, el usuario no existe";
+					// usuario  no existe
+				}
+
+				else {
+
+					console.log(erroMessage);
+				}
+
+
+				$ionicPopup.alert({
+					title: 'Algo salio mal!!',
+					template: mensaje
+				});
+
+				$scope.habilitarfORM = true;
+			})
+
+		}
 	})
 	.controller('RegistrarController',
 	function ($scope, $stateParams, $state, $ionicPopup, Servicio) {
-		console.log("atr");
 		$scope.persona = {};
 		$scope.persona.mail = "soii_fede123@hotmail.com";
 		$scope.persona.clave = "federico18";
 		$scope.persona.reClave = "federico18";
 		$scope.$root.showMenuIcon = true;
+		var firabaseJugadores = Servicio.RefJugadores();
+
 		$scope.fechaActual = function () {
 			var today = new Date();
 			var dd = today.getDate();

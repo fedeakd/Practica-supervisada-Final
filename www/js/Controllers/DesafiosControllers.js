@@ -23,10 +23,10 @@ angular.module('app.DesafiosControllers', ['firebase'])
         desafio.estado = "activo";
 
         $scope.desafio = {};
-        $scope.desafio.descripcion = "Corre mil vueltas";
+        $scope.desafio.descripcion = "Sacarte un 10 en el parcial";
         $scope.desafio.fecha = new Date("2017-10-10");
         $scope.desafio.cantidadPuesta = 5;
-        $scope.desafio.jugadoresLimite = 5;
+        $scope.desafio.jugadoresLimite = 2;
 
 
 
@@ -57,7 +57,7 @@ angular.module('app.DesafiosControllers', ['firebase'])
             desafio.descripcion = $scope.desafio.descripcion;
             desafio.cantidadPuesta = Number($scope.desafio.cantidadPuesta);
             desafio.jugadoresLimite = Number($scope.desafio.jugadoresLimite);
-
+            desafio.jugadores.push($scope.usuario);
 
             desafio.categoria = $scope.desafio.categoria.name;
             desafio.desafiante = Informacion.usuario;
@@ -66,6 +66,7 @@ angular.module('app.DesafiosControllers', ['firebase'])
             firebaseDesafios.push(desafio);
 
             Informacion.usuario.puntos -= desafio.cantidadPuesta;
+            console.log(Informacion.usuario);
             firebaseUsuarios.child(Informacion.usuario.key).update({ "puntos": Informacion.usuario.puntos });
 
 
@@ -84,7 +85,7 @@ angular.module('app.DesafiosControllers', ['firebase'])
                 console.log($scope.usuario.estado);
             });
         }
-        else{
+        else {
             $scope.usuario = Informacion.usuario;
         }
         //fin
@@ -124,7 +125,28 @@ angular.module('app.DesafiosControllers', ['firebase'])
             })
         }
         $scope.SeleccinarJugador = function (jugador) {
+            console.log(jugador);
+
             var datos = $scope.desafioAdministrador;
+            //Parte partida
+            console.log(datos);
+
+            datos.jugadores.forEach(function (player) {
+                console.log(player.key);
+                firebaseUsuarios.child(player.key).once('value').then(function (snapshot) {
+                    var p = snapshot.val();
+                    if (jugador.key == player.key) {
+                        p.partidas.Desafio.ganada++;
+                    }
+                    else {
+                        p.partidas.Desafio.perdida++;
+                    }
+                    firebaseUsuarios.child(player.key).update({ "partidas": p.partidas });
+
+                })
+
+            }, this);
+
             firebaseUsuarios.child(jugador.key).once('value').then(function (snapshot) {
                 var resultado = (datos.jugadores.length * datos.cantidadPuesta) + snapshot.val().puntos;
                 firebaseUsuarios.child(jugador.key).update({ "puntos": resultado });
@@ -150,20 +172,29 @@ angular.module('app.DesafiosControllers', ['firebase'])
         }
         $scope.Aceptar = function (desafio) {
 
-            var usuario = Informacion.usuario;
+                    var usuario = $scope.usuario;
 
 
             //Valido  para que este todo correcto
             if (!Informacion.ValidarReto(usuario, desafio)) {
                 return;
             }
+            if (usuario.key) {
+                if (Informacion.usuario.mail == null) {
+                    Informacion.TraerUsuarioActual(function (usuario) {
+
+                        $scope.usuario = usuario;
+                        console.log($scope.usuario.estado);
+                    });
+                }
+            }
             //Agrego al jugador al desafio y luego lo actualizo  en firebase
             desafio.jugadores.push(usuario);
             firebaseDesafios.child(desafio.key).update({ "jugadores": desafio.jugadores });
 
             //Le descuento los puntos al jugador y luego lo actualiazo en firebase
-            usuario.puntos -= desafio.cantidadPuesta;
-            firebaseUsuarios.child(usuario.key).update({ "puntos": usuario.puntos });
+            $scope.usuario.puntos -= desafio.cantidadPuesta;
+            firebaseUsuarios.child($scope.usuario.key).update({ "puntos": usuario.puntos });
 
             //Mensaje  de logro
             Informacion.AlertaMensaje("Logrado!!", "Te has unido a este desafio!!");
@@ -171,10 +202,15 @@ angular.module('app.DesafiosControllers', ['firebase'])
 
         $scope.MostrarJugadores = function (item) {
             var mostrar = ""
-            item.jugadores.forEach(function (jugador) {
-                mostrar += "<li style='text-align: center;'>" + jugador.mail + "</li>";
-            });
 
+
+            try {
+                item.jugadores.forEach(function (jugador) {
+                    mostrar += "<li style='text-align: center;'>" + jugador.mail + "</li>";
+                });
+            } catch (error) {
+
+            }
             var alertPopup = $ionicPopup.alert({
                 scope: $scope,
                 title: 'Jugadores!',

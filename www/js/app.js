@@ -2,6 +2,7 @@
 angular.module('app', [
   'firebase',
   'ionic',
+  'ngCordova',
   'angular-flippy',
   'app.controllers',
   'app.InformacionUsuarioControllers',

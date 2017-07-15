@@ -1,5 +1,25 @@
 <ion-view title="Mis partidas" id="page10" hide-nav-bar="false">
-  <ion-content padding="true" class="has-header">
-    <h1 id="misPartidas-heading2" style="color:#000000;">Completar codigo</h1>
+  <ion-content style="background: url(http://cdn.wallpapersafari.com/18/36/igqIQj.jpg) no-repeat center;background-size:cover;"
+    padding="true" class="has-header">
+    <div class="switch-button" style="top:25px; width:100%;"><span class="active"></span>
+      <button class="switch-button-case left active-case" ng-click="CambioTab('Desafio')">Desafio</button>
+      <button class="switch-button-case right" ng-click="CambioTab('BatallaNaval') ">Batalla Naval</button>
+    </div>
+    <div style="position: absolute; top:50px; width:95%; height: 500px">
+        <ion-list id="listaDeDesafios-list2">
+          <ion-item class="calm" style="background-color:rgba(109, 155, 16, 0.46);">Ganadas:
+            <h2 class="texto">{{partida.ganada}}</h2>
+          </ion-item>
+          <ion-item class="calm" style="background-color:rgba(109, 155, 16, 0.46);">Empatadas:
+            <h2 class="texto">{{partida.empatada}}</h2>
+          </ion-item>
+          <ion-item class="calm" style="background-color:rgba(109, 155, 16, 0.46);">Perdidas:
+            <h2 class="texto">{{partida.perdida}}</h2>
+          </ion-item>
+          <ion-item class="calm" style="background-color:rgba(109, 155, 16, 0.46);">Cantidad:
+            <h2 class="texto">{{partida.total}}</h2>
+          </ion-item>
+        </ion-list>
+    </div>
   </ion-content>
 </ion-view>
